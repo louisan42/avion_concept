@@ -1,0 +1,103 @@
+spring:
+  application:
+    name: Avion_Concept
+
+  profiles:
+    active: dev
+  # Banner Text
+  banner:
+    charset: UTF-8
+    location: classpath:/banner/avion.txt
+  # Jackson Settings
+  jackson:
+    time-zone: America/Toronto
+    date-format: "yyyy-MM-dd HH:mm:ss"
+  #   Email Settings
+  mail:
+    username: ${GMAIL_APP_USERNAME}
+    password: ${GMAIL_APP_PASSWORD}
+    host: smtp.gmail.com
+    port: 587
+    protocol: smtp
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+  # Common Database Settings
+  sql:
+    init:
+      continue-on-error: false
+  jpa:
+    show-sql: true
+    open-in-view: false
+    properties:
+      jakarta:
+        persistence:
+          sharedCache:
+            mode: ENABLE_SELECTIVE
+      hibernate:
+        '[format_sql]': true
+    hibernate:
+      naming.physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+
+server:
+  port: 8081
+
+#management:
+#  endpoints:
+#    web:
+#      exposure:
+#        include: "*"
+#  endpoint:
+#    health:
+#      show-details: always
+
+---
+# Prod Profile
+spring:
+  config:
+    activate:
+      on-profile: prod
+
+  # Database Settings
+  datasource:
+    url: jdbc:postgresql://${SUPABASE_PQ_URL}:${SUPABASE_PQ_PORT}/postgres
+    username: ${SUPABASE_PQ_USER}
+    password: ${SUPABASE_PQ_PASS}
+    hikari:
+      maximum-pool-size: 2
+  jpa:
+    hibernate:
+      ddl-auto: validate
+# Logger
+logging.level:
+  org.hibernate.type.descriptor.sql.BasicBinder: TRACE
+  org.hibernate.SQL: SEVERE
+  web: SEVERE
+  '[com.avion.avion_concept]': SEVERE
+
+---
+# dev Profile
+spring:
+  config:
+    activate:
+      on-profile: dev
+
+  # Database Settings
+  datasource:
+    url: ${DEV_DB_URL}
+    username: ${DEV_DB_USER}
+    password: ${DEV_DB_PASS}
+    hikari:
+      maximum-pool-size: 2
+  jpa:
+    hibernate:
+      ddl-auto: validate
+# Logger
+logging.level:
+  org.hibernate.type.descriptor.sql.BasicBinder: TRACE
+  org.hibernate.SQL: DEBUG
+  web: DEBUG
+  '[com.avion.avion_concept]': DEBUG
